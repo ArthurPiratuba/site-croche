@@ -1,0 +1,485 @@
+/* =========================================================
+   Fernanda Crochê — single stylesheet
+   Palette: cocoa, chestnut, caramel, hazel, linen, milk
+   ========================================================= */
+
+:root{
+  --cocoa:#241610;
+  --chestnut:#472a1b;
+  --caramel:#a9713f;
+  --hazel:#c99a6b;
+  --linen:#e6d6c1;
+  --milk:#f7f1e8;
+  --olive:#77784f;
+
+  --ink:var(--cocoa);
+  --paper:var(--milk);
+
+  --display:"Fraunces","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --body:"Karla","Segoe UI",system-ui,-apple-system,sans-serif;
+
+  --step--1:clamp(.78rem,.76rem + .15vw,.86rem);
+  --step-0:clamp(1rem,.97rem + .2vw,1.09rem);
+  --step-1:clamp(1.2rem,1.1rem + .5vw,1.45rem);
+  --step-2:clamp(1.6rem,1.35rem + 1.2vw,2.4rem);
+  --step-3:clamp(2.3rem,1.7rem + 3vw,4.2rem);
+
+  --wrap:1140px;
+  --pad:clamp(1.25rem,4vw,2.5rem);
+  --gap:clamp(1.5rem,3vw,2.5rem);
+  --round:14px;
+  --ease:cubic-bezier(.2,.7,.25,1);
+
+  /* sticky topbar height — used by the bar and by the anchors' scroll-margin */
+  --bar-h:74px;
+}
+@media (max-width:760px){
+  :root{--bar-h:64px}
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font:400 var(--step-0)/1.65 var(--body);
+  -webkit-font-smoothing:antialiased;
+  /* `clip` contains the horizontal overflow without creating a scroll
+     container — `hidden` here propagates to the viewport and breaks the
+     sticky topbar on mobile */
+  overflow-x:clip;
+}
+@supports not (overflow:clip){
+  body{overflow-x:hidden}
+}
+img,svg{max-width:100%}
+h1,h2,h3,h4{margin:0;font-family:var(--display);font-weight:600;line-height:1.08;letter-spacing:-.015em}
+p{margin:0 0 1em}
+ul,ol,dl{margin:0;padding:0;list-style:none}
+
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2.5px solid var(--caramel);outline-offset:3px;border-radius:4px}
+
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--pad)}
+
+.skip{position:absolute;left:-9999px;top:0;background:var(--cocoa);color:var(--milk);padding:.7rem 1rem;z-index:99}
+.skip:focus{left:.5rem;top:.5rem}
+
+.eyebrow{
+  font:500 var(--step--1)/1 var(--body);
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--caramel);margin:0 0 1rem;
+}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.6em;
+  font:500 var(--step--1)/1 var(--body);letter-spacing:.09em;text-transform:uppercase;
+  padding:.95rem 1.6rem;border-radius:999px;border:1.5px solid transparent;
+  transition:transform .25s var(--ease),background-color .25s,color .25s,border-color .25s;
+}
+.btn--solid{background:var(--chestnut);color:var(--milk)}
+.btn--solid:hover{background:var(--caramel);transform:translateY(-2px)}
+.btn--ghost{border-color:rgba(71,42,27,.35);color:var(--chestnut)}
+.btn--ghost:hover{border-color:var(--chestnut);background:rgba(71,42,27,.06);transform:translateY(-2px)}
+.btn--lg{padding:1.1rem 2.2rem;font-size:var(--step-0)}
+
+/* icon inside a button: follows the text size and color */
+.ico{width:1.25em;height:1.25em;flex:none;display:block}
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(247,241,232,.82);
+  backdrop-filter:blur(10px) saturate(140%);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s,background-color .3s;
+}
+.topbar.is-stuck{border-bottom-color:rgba(71,42,27,.16);background:rgba(247,241,232,.94)}
+.topbar__inner{
+  position:relative;
+  display:flex;align-items:center;align-content:center;
+  gap:var(--gap);min-height:var(--bar-h);padding-block:.5rem;
+}
+
+.brand{display:inline-flex;align-items:center;gap:.6rem;margin-right:auto;line-height:1}
+.brand__mark{width:38px;height:38px;flex:none;overflow:visible}
+.mark__blob{fill:#e8e0d8}
+.mark__blob--soft{fill:#e0c8b8}
+.mark__yarnball{fill:#753f15}
+.brand:hover .brand__mark{animation:roll 1.1s var(--ease)}
+/* same lockup as the hero: <text> with textLength, so the typeface and the
+   letter spacing are identical and scale with the svg height.
+   in the menu both words share one size (25.2), with CROCHÊ's textLength
+   scaled down proportionally to keep the hero's letter spacing.
+   box height = 23 units = desired font-size × 0.913 */
+.brand__lettering{
+  display:block;flex:none;overflow:visible;
+  height:clamp(.87rem,1.46vw,1.05rem);width:auto;
+}
+.brand__name{
+  font-family:"Noto Serif","Droid Serif","PT Serif",Georgia,serif;
+  font-weight:700;font-size:25.2px;fill:#753f15;
+}
+.brand__craft{
+  font-family:"Cormorant Garamond","EB Garamond",Garamond,Georgia,serif;
+  font-weight:500;font-size:25.2px;fill:#753f15;
+}
+
+.nav{display:flex;gap:1.75rem;font-size:var(--step--1);letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.nav a{position:relative;padding:.35rem 0}
+.nav a::after{
+  content:"";position:absolute;left:0;right:0;bottom:-2px;height:6px;
+  background:radial-gradient(circle at 4px 6px,var(--caramel) 2.4px,transparent 3px) 0 0/8px 6px repeat-x;
+  opacity:0;transform:translateY(3px);transition:opacity .25s,transform .25s var(--ease);
+}
+.nav a:hover::after{opacity:1;transform:none}
+
+/* ---------- hamburger button (mobile only) ---------- */
+.nav-toggle{
+  display:none;
+  width:44px;height:44px;flex:none;margin-left:auto;
+  padding:0;border:0;background:transparent;color:var(--chestnut);
+  cursor:pointer;border-radius:999px;
+}
+.nav-toggle__bars,
+.nav-toggle__bars::before,
+.nav-toggle__bars::after{
+  display:block;width:24px;height:2px;border-radius:2px;
+  background:currentColor;
+  transition:transform .3s var(--ease),opacity .2s var(--ease);
+}
+.nav-toggle__bars{position:relative;margin:0 auto}
+.nav-toggle__bars::before,
+.nav-toggle__bars::after{content:"";position:absolute;left:0}
+.nav-toggle__bars::before{top:-7px}
+.nav-toggle__bars::after{top:7px}
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars{background:transparent}
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars::before{transform:translateY(7px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars::after{transform:translateY(-7px) rotate(-45deg)}
+
+@media (max-width:760px){
+  .topbar__inner{gap:1rem}
+  .nav-toggle{display:block}
+
+  /* dropdown panel: sits outside the bar's flow so it does not
+     throw the brand off vertically */
+  .nav{
+    /* the containing block is already the .wrap padding box,
+       i.e. the full width of the bar — zero insets are enough */
+    position:absolute;top:100%;left:0;right:0;
+    flex-direction:column;gap:0;
+    padding-inline:var(--pad);
+    background:rgba(247,241,232,.97);
+    backdrop-filter:blur(10px) saturate(140%);
+    border-bottom:1px solid rgba(71,42,27,.16);
+    box-shadow:0 18px 30px -24px rgba(36,22,16,.6);
+    overflow:hidden;
+    max-height:0;opacity:0;visibility:hidden;
+    transition:max-height .35s var(--ease),opacity .25s var(--ease),visibility .35s;
+  }
+  .nav.is-open{
+    max-height:60vh;opacity:1;visibility:visible;
+    padding-block:.25rem .75rem;
+  }
+  .nav a{padding:.95rem .25rem;margin-left:.75rem;border-top:1px dashed rgba(71,42,27,.2)}
+  .nav a::after{display:none}
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero{position:relative;padding:clamp(3.5rem,9vw,7rem) 0 clamp(3.5rem,8vw,6rem);overflow:hidden}
+.hero__texture{
+  position:absolute;inset:-10% -5% auto;height:120%;
+  background-image:
+    repeating-linear-gradient(62deg,rgba(169,113,63,.13) 0 2px,transparent 2px 15px),
+    repeating-linear-gradient(-62deg,rgba(169,113,63,.13) 0 2px,transparent 2px 15px);
+  mask-image:radial-gradient(120% 75% at 50% 15%,#000 10%,transparent 72%);
+  pointer-events:none;
+}
+.hero__inner{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center}
+
+/* ----- logotype (vectorized from the reference) ----- */
+.logotype{position:relative;width:100%;max-width:600px;margin:0 auto 1.5rem}
+.logo{display:block;width:100%;height:auto;overflow:visible}
+
+/* colors sampled from the reference */
+.logo{--logo-ink:#753f15}
+.logo__blob--a{fill:#e8e0d8}
+.logo__blob--b{fill:#e0c8b8}
+.logo__yarnball{fill:var(--logo-ink)}
+
+/* type: fonts matching the reference (units = viewBox) */
+.logo__name{
+  font-family:"Noto Serif","Droid Serif","PT Serif",Georgia,serif;
+  font-weight:700;font-size:25.2px;fill:var(--logo-ink);
+}
+.logo__craft{
+  font-family:"Cormorant Garamond","EB Garamond",Garamond,Georgia,serif;
+  font-weight:500;font-size:37px;fill:var(--logo-ink);
+}
+
+/* ornamental line: vector with a continuous stroke */
+.logo__swash{
+  fill:none;stroke:var(--logo-ink);stroke-width:2.4;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+
+/* sequence: yarn ball → FERNANDA → the line draws itself → CROCHÊ */
+.js-anim .logo__icon{opacity:0;transform:scale(.92);transform-origin:center;transform-box:fill-box}
+.js-anim .logo__name,.js-anim .logo__craft{opacity:0}
+.js-anim .logo__swash{stroke-dasharray:1;stroke-dashoffset:1}
+
+.is-loaded .logo__icon{animation:logo-pop .9s var(--ease) .1s both}
+.is-loaded .logo__name{animation:logo-rise .7s var(--ease) .45s both}
+.is-loaded .logo__swash{animation:swash-draw 1.6s cubic-bezier(.45,.05,.35,1) .8s both}
+.is-loaded .logo__craft{animation:logo-rise .7s var(--ease) 1.9s both}
+
+@keyframes logo-pop{
+  from{opacity:0;transform:scale(.92)}
+  to{opacity:1;transform:none}
+}
+@keyframes logo-rise{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:none}
+}
+@keyframes swash-draw{to{stroke-dashoffset:0}}
+@keyframes roll{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+.hero__lead{max-width:48ch;font-size:var(--step-1);line-height:1.5;color:rgba(36,22,16,.82)}
+.hero__actions{display:flex;flex-wrap:wrap;gap:.9rem;justify-content:center;margin-top:.5rem}
+
+/* gauge / quick spec strip */
+.gauge{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:0;
+  margin-top:clamp(2.5rem,6vw,4rem);
+  border-top:1px solid rgba(71,42,27,.2);
+  padding-top:1.25rem;width:100%;max-width:640px;
+}
+.gauge > div{flex:1 1 150px;padding:.35rem 1rem;border-left:1px solid rgba(71,42,27,.14)}
+.gauge > div:first-child{border-left:0}
+.gauge dt{font:500 var(--step--1)/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--caramel);margin-bottom:.4rem}
+.gauge dd{margin:0;font-family:var(--display);font-size:var(--step-0)}
+
+/* =========================================================
+   GENERIC SECTIONS
+   ========================================================= */
+.section{padding:clamp(3.5rem,8vw,6.5rem) 0}
+
+/* the topbar is sticky: the anchor stops exactly at its height.
+   No extra slack — any surplus reveals the previous section's band. */
+[id]{scroll-margin-top:var(--bar-h)}
+.head{max-width:52ch;margin-bottom:clamp(2rem,5vw,3rem)}
+.head--center{margin-inline:auto;text-align:center}
+.head h2{font-size:var(--step-2);margin-bottom:.6rem}
+.head__lead{color:rgba(36,22,16,.72);margin:0}
+
+/* =========================================================
+   PIECES
+   ========================================================= */
+.section--pieces{background:var(--linen)}
+.grid{display:grid;gap:var(--gap);grid-template-columns:repeat(auto-fit,minmax(235px,1fr))}
+
+.card{
+  background:var(--milk);border-radius:var(--round);overflow:hidden;
+  box-shadow:0 1px 0 rgba(71,42,27,.1),0 14px 28px -22px rgba(36,22,16,.5);
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease);
+}
+.card:hover{transform:translateY(-6px);box-shadow:0 1px 0 rgba(71,42,27,.1),0 26px 40px -24px rgba(36,22,16,.55)}
+.card__text{padding:1.35rem 1.4rem 1.6rem}
+.card h3{font-size:var(--step-1);margin-bottom:.45rem}
+.card p{font-size:var(--step--1);line-height:1.6;color:rgba(36,22,16,.75);margin:0 0 .8rem}
+.price{font-family:var(--display);font-style:italic;color:var(--caramel)!important;font-size:var(--step-0)!important;margin:0!important}
+
+/* ----- stitch textures drawn in CSS ----- */
+.swatch{
+  aspect-ratio:4/3;background-color:var(--yarn);
+  box-shadow:inset 0 -14px 26px -18px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.14);
+  transition:filter .35s var(--ease);
+}
+.card:hover .swatch{filter:saturate(115%) brightness(1.04)}
+
+.swatch--granny{
+  background-image:
+    radial-gradient(circle at 50% 50%,var(--yarn-alt) 0 13%,transparent 14%),
+    radial-gradient(circle at 50% 50%,transparent 0 23%,rgba(255,255,255,.28) 24% 34%,transparent 35%),
+    repeating-linear-gradient(45deg,rgba(0,0,0,.14) 0 2px,transparent 2px 7px);
+  background-size:46px 46px,46px 46px,auto;
+}
+.swatch--basket{
+  background-image:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.2) 0 2px,transparent 2px 11px),
+    repeating-radial-gradient(circle at 50% 118%,var(--yarn-alt) 0 7px,var(--yarn) 7px 15px);
+}
+.swatch--shawl{
+  background-image:
+    repeating-linear-gradient(60deg,rgba(255,255,255,.3) 0 3px,transparent 3px 19px),
+    repeating-linear-gradient(-60deg,rgba(255,255,255,.3) 0 3px,transparent 3px 19px),
+    repeating-linear-gradient(0deg,rgba(36,22,16,.16) 0 2px,transparent 2px 19px);
+}
+.swatch--amigurumi{
+  background-image:
+    repeating-linear-gradient(45deg,var(--yarn-alt) 0 2.5px,transparent 2.5px 10px),
+    repeating-linear-gradient(-45deg,var(--yarn-alt) 0 2.5px,transparent 2.5px 10px);
+  background-size:20px 20px;
+}
+
+/* =========================================================
+   STUDIO
+   ========================================================= */
+.section--studio{background:var(--cocoa);color:var(--linen)}
+.section--studio .eyebrow{color:var(--hazel)}
+.studio{display:grid;gap:clamp(2rem,5vw,4rem);grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:center}
+.studio__text h2{font-size:var(--step-2);margin-bottom:1rem}
+.studio__text p{color:rgba(230,214,193,.82);max-width:54ch}
+.studio__text p:not(.eyebrow){line-height:1.75;margin:0 0 1.15em}
+.sign{font-family:var(--display);font-style:italic;font-size:var(--step-1);color:var(--hazel)!important;margin:.7rem 0 0}
+
+.specs{
+  border:1px solid rgba(230,214,193,.22);border-radius:var(--round);
+  padding:1.6rem 1.5rem;background:rgba(230,214,193,.05);
+}
+.specs h3{font-size:var(--step-1);margin-bottom:1.1rem;color:var(--milk)}
+.specs dl > div{display:grid;grid-template-columns:auto 1fr;gap:.5rem 1rem;padding:.7rem 0;border-top:1px dashed rgba(230,214,193,.22)}
+.specs dl > div:first-child{border-top:0;padding-top:0}
+.specs dt{font:500 var(--step--1)/1.5 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--hazel)}
+.specs dd{margin:0;font-size:var(--step--1);text-align:right;color:var(--linen)}
+
+@media (max-width:820px){.studio{grid-template-columns:1fr}}
+
+/* =========================================================
+   ORDERS
+   ========================================================= */
+.steps{display:grid;gap:var(--gap);grid-template-columns:repeat(auto-fit,minmax(240px,1fr));counter-reset:s}
+.step{position:relative;padding-top:1.4rem;border-top:2px solid rgba(71,42,27,.18)}
+.step__number{
+  display:grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:999px;
+  background:var(--caramel);color:var(--milk);
+  font-family:var(--display);font-size:var(--step-1);line-height:1;
+  margin-bottom:.9rem;
+}
+.step h3{font-size:var(--step-1);margin-bottom:.4rem}
+.step p{color:rgba(36,22,16,.75);font-size:var(--step--1);margin:0}
+
+.cta{
+  margin-top:clamp(3rem,7vw,5rem);text-align:center;
+  padding:clamp(2.2rem,5vw,3.2rem) var(--pad);
+  border-radius:var(--round);
+  background:var(--linen);
+  background-image:repeating-linear-gradient(45deg,rgba(169,113,63,.16) 0 2px,transparent 2px 12px);
+}
+.cta p{font-family:var(--display);font-size:var(--step-2);margin:0 0 1.2rem}
+.cta small{display:block;margin-top:1rem;font-size:var(--step--1);color:rgba(36,22,16,.65)}
+
+/* =========================================================
+   INSTAGRAM
+   ========================================================= */
+.insta{
+  display:grid;gap:clamp(.7rem,1.8vw,1.2rem);
+  grid-template-columns:repeat(3,1fr);
+}
+@media (max-width:700px){.insta{grid-template-columns:repeat(2,1fr)}}
+
+/* photo only: 4/5 portrait, taller than wide */
+.insta__placeholder,.insta__link{
+  display:block;position:relative;aspect-ratio:4/5;
+  border-radius:var(--round);overflow:hidden;background:var(--linen);
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease);
+  box-shadow:0 1px 0 rgba(71,42,27,.1),0 14px 28px -22px rgba(36,22,16,.5);
+}
+.insta__link:hover{transform:translateY(-6px);box-shadow:0 1px 0 rgba(71,42,27,.1),0 26px 40px -24px rgba(36,22,16,.55)}
+.insta__placeholder{animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+
+.insta__photo{display:block;width:100%;height:100%;overflow:hidden}
+.insta__img{
+  display:block;width:100%;height:100%;object-fit:cover;
+  transition:transform .5s var(--ease);
+}
+.insta__link:hover .insta__img{transform:scale(1.06)}
+
+.insta__badge{
+  position:absolute;top:.6rem;right:.6rem;
+  display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:999px;
+  background:rgba(36,22,16,.55);color:var(--milk);font-size:.8rem;line-height:1;
+  backdrop-filter:blur(4px);
+}
+
+.insta__notice{
+  margin:1.5rem 0 0;text-align:center;
+  font-size:var(--step--1);color:rgba(36,22,16,.65);
+}
+.insta__cta{margin:clamp(1.5rem,4vw,2.25rem) 0 0;text-align:center}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.footer{
+  background:var(--chestnut);color:var(--linen);
+  padding:clamp(2.5rem,6vw,4rem) 0 1.5rem;
+  /* the ornamental stroke uses overflow:visible and can bleed sideways */
+  overflow-x:clip;
+}
+.footer__inner{display:grid;gap:2rem;grid-template-columns:minmax(0,1.6fr) repeat(2,minmax(0,1fr))}
+
+.brand--footer{margin-right:0}
+.brand--footer .brand__mark{width:48px;height:48px}
+.brand--footer .mark__blob{fill:#e8e0d8}
+.brand--footer .mark__blob--soft{fill:#e0c8b8}
+.brand--footer .mark__yarnball{fill:#753f15}
+.brand--footer .brand__lettering{height:clamp(.91rem,1.64vw,1.14rem)}
+.brand--footer .brand__name{fill:var(--milk)}
+.brand--footer .brand__craft{fill:var(--hazel)}
+
+.footer__brand p{font-size:var(--step--1);color:rgba(230,214,193,.72);margin:.9rem 0 0;max-width:32ch}
+.footer__col h4{font:500 var(--step--1)/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--hazel);margin-bottom:1rem}
+.footer__col{display:flex;flex-direction:column;gap:.6rem;font-size:var(--step--1)}
+.footer__col a{color:rgba(230,214,193,.85);width:fit-content}
+.footer__col a:hover{color:var(--milk);text-decoration:underline;text-decoration-style:wavy;text-underline-offset:4px}
+
+.footer__end{margin-top:clamp(2rem,5vw,3rem);text-align:center}
+.footer__swash{
+  display:block;width:min(100%,420px);height:auto;margin:0 auto;
+  overflow:visible;
+}
+.footer__swash path{
+  fill:none;stroke:var(--hazel);stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round;opacity:.55;
+}
+/* the footer line draws itself like the hero's, on entering the viewport */
+.js-anim .footer__swash path{stroke-dasharray:1;stroke-dashoffset:1}
+.js-anim .footer__swash.is-drawn path{
+  animation:swash-draw 1.6s cubic-bezier(.45,.05,.35,1) .1s both;
+}
+
+.footer__end p{font-size:var(--step--1);color:rgba(230,214,193,.6);margin:1rem 0 0}
+
+@media (max-width:680px){
+  .footer__inner{grid-template-columns:1fr 1fr}
+  .footer__brand{grid-column:1/-1}
+}
+
+/* =========================================================
+   SCROLL REVEAL
+   ========================================================= */
+.js-anim .reveal{opacity:0;transform:translateY(20px)}
+.js-anim .reveal.is-in{
+  opacity:1;transform:none;
+  transition:opacity .7s var(--ease),transform .7s var(--ease);
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js-anim .reveal,.js-anim .logo__icon,.js-anim .logo__name,.js-anim .logo__craft{opacity:1!important;transform:none!important}
+  .js-anim .logo__swash,.js-anim .footer__swash path{stroke-dashoffset:0!important}
+}

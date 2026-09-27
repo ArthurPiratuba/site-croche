@@ -1,0 +1,20 @@
+services:
+  site:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: fernanda-croche
+    restart: unless-stopped
+    ports:
+      - "50407:8080"
+    environment:
+      # Instagram long-lived token (see INSTAGRAM.md)
+      IG_TOKEN: "${IG_TOKEN:-}"
+      IG_LIMIT: "9"
+      IG_CACHE_MIN: "30"
+      # where the refreshed token is written, so it survives a restart
+      IG_TOKEN_FILE: "/site/.secrets/ig-token"
+    volumes:
+      # the whole folder: edit the files and hit F5, no rebuild.
+      # (mounting file by file breaks when the editor swaps the inode)
+      - .:/site
