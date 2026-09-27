@@ -104,6 +104,21 @@ async function igRespond(res) {
   res.end(body);
 }
 
+/* ---------------------------------------------------------
+   Open Graph precisa de URLs absolutas (o WhatsApp não resolve
+   caminho relativo). Em vez de chumbar o domínio no HTML, o
+   marcador __SITE_URL__ é trocado aqui: por SITE_URL, se
+   definida, senão pelo host da própria requisição.
+   --------------------------------------------------------- */
+const SITE_URL = (process.env.SITE_URL || '').trim().replace(/\/+$/, '');
+
+function siteUrl(req) {
+  if (SITE_URL) return SITE_URL;
+  const proto = (req.headers['x-forwarded-proto'] || '').split(',')[0].trim() || 'http';
+  const host = (req.headers['x-forwarded-host'] || req.headers.host || 'localhost').split(',')[0].trim();
+  return `${proto}://${host}`;
+}
+
 http.createServer((req, res) => {
   const requestPath = decodeURIComponent(req.url.split('?')[0]);
 
@@ -123,10 +138,15 @@ http.createServer((req, res) => {
       res.end('<h1>404</h1><p>Página não encontrada.</p>');
       return;
     }
+    const ext = path.extname(target);
+    const body = ext === '.html'
+      ? Buffer.from(data.toString('utf8').replaceAll('__SITE_URL__', siteUrl(req)), 'utf8')
+      : data;
+
     res.writeHead(200, {
-      'Content-Type': MIME_TYPES[path.extname(target)] || 'application/octet-stream',
-      'Cache-Control': 'no-cache'
+      'Content-Type': MIME_TYPES[ext] || 'application/octet-stream',
+      'Cache-Control': ext === '.png' || ext === '.svg' ? 'public, max-age=86400' : 'no-cache'
     });
-    res.end(data);
+    res.end(body);
   });
 }).listen(PORT, () => console.log(`Fernanda Crochê at http://localhost:${PORT}`));
