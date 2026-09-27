@@ -15,7 +15,7 @@
   --ink:var(--cocoa);
   --paper:var(--milk);
 
-  --display:"Fraunces","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --display:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
   --body:"Karla","Segoe UI",system-ui,-apple-system,sans-serif;
 
   --step--1:clamp(.78rem,.76rem + .15vw,.86rem);
